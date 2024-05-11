@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: vscan-api
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  cloud:
+    aws:
+      s3:
+        region: eu-central-1
+        dirty-bucket: vscan-dirty
+      dynamodb:
+        region: eu-central-1
+        file-scan-result-table: FileScanResults
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info, health
+      base-path: /
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.dataslab.vscan: debug
+    org.springframework: info
+
+
