@@ -35,31 +35,31 @@ jobs:
         run: ./gradlew clean build
 
       - name: Configure AWS credentials
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/master'
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-region: eu-central-1
           role-to-assume: arn:aws:iam::992382656299:role/github-actions-AntonSalnikov-VSCANER-API
 
       - name: Login to Amazon ECR
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/master'
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Extract branch name
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/master'
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
 
       - name: Create Short Hash
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/master'
         shell: bash
         run: echo "##[set-output name=hash;]$(echo ${GITHUB_SHA} | cut -c1-8)"
         id: short-hash-create
 
       - name: Create Image Tag
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/master'
         shell: bash
         run: echo "::set-output name=image-tag::${{ steps.extract_branch.outputs.branch }}_${{ github.run_number }}_${{ steps.short-hash-create.outputs.hash }}"
         id: image-tag-create
@@ -68,7 +68,7 @@ jobs:
         run: ls -R
 
       - name: Build, tag, and push image to Amazon ECR
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/master'
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ env.SERVICE_NAME }}
@@ -80,12 +80,12 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Download task definition
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/master'
         run: |
           aws ecs describe-task-definition --task-definition document-handler-service --query taskDefinition > task-definition.json
 
       - name: Render Amazon ECS task definition
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/master'
         id: render-container
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
@@ -94,7 +94,7 @@ jobs:
           image: ${{ steps.login-ecr.outputs.registry }}/${{ env.SERVICE_NAME }}:${{ steps.image-tag-create.outputs.image-tag }}
 
       - name: Deploy to ENV
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/master'
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.render-container.outputs.task-definition }}
