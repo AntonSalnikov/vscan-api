@@ -62,7 +62,7 @@ dependencies {
 
     implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:${springCloudAwsVersion}")
     // Replace the following with the starter dependencies of specific modules you wish to use
-    implementation 'io.awspring.cloud:spring-cloud-aws-starter-sqs'
+    //implementation 'io.awspring.cloud:spring-cloud-aws-starter-sqs'
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-dynamodb'
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3'
     implementation 'software.amazon.awssdk:s3-transfer-manager'

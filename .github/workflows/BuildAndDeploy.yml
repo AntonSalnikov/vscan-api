@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Set up JDK
+      - name: Set JDK
         uses: actions/setup-java@v1
         with:
           java-version: '21.0.3'

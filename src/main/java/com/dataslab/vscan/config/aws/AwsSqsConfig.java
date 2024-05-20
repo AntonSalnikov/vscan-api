@@ -1,12 +1,6 @@
 package com.dataslab.vscan.config.aws;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.messaging.converter.MappingJackson2MessageConverter;
-import org.springframework.messaging.converter.MessageConverter;
-
-import java.util.Collections;
 
 @Configuration
 public class AwsSqsConfig {
