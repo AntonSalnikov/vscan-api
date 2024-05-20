@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: vscan-api
+
+
+logging:
+  level:
+    com.dataslab.vscan: debug
+    org.springframework: debug

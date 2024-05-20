@@ -1,4 +1,4 @@
-package com.dataslab.vscan.config;
+package com.dataslab.vscan.config.aws;
 
 import org.apache.commons.lang3.StringUtils;
 import io.awspring.cloud.autoconfigure.core.Profile;

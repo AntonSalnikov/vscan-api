@@ -13,9 +13,10 @@ public interface FileStoragePort {
      *
      * @param key unique key used to identify file
      * @param file file to be uploaded
+     * @param originalFileName original file name provided by the client.
      *
      * @return SHA256 checksum of the uploaded file
      * @throws FileUploadException if upload fails
      */
-    String uploadFile(@NonNull UUID key, @NonNull File file);
+    String uploadFile(@NonNull UUID key, @NonNull File file, String originalFileName);
 }

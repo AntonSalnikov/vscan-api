@@ -1,4 +1,4 @@
-package com.dataslab.vscan.config;
+package com.dataslab.vscan.config.aws;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -7,13 +7,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.annotation.Validated;
 
 @Configuration
-@ConfigurationProperties(prefix = "spring.cloud.aws.s3")
+@ConfigurationProperties(prefix = "spring.cloud.aws.dynamodb")
 @ToString@EqualsAndHashCode
 @NoArgsConstructor
 @Getter@Setter
 @Validated
-public class S3BucketProperties {
+public class CustomDynamoDbProperties {
 
     @NotBlank
-    private String dirtyBucket;
+    private String fileScanResultTable;
 }

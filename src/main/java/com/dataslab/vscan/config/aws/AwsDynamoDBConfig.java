@@ -1,4 +1,4 @@
-package com.dataslab.vscan.config;
+package com.dataslab.vscan.config.aws;
 
 import com.dataslab.vscan.infra.dynamodb.FileScanResultEntity;
 import io.awspring.cloud.autoconfigure.dynamodb.DynamoDbProperties;

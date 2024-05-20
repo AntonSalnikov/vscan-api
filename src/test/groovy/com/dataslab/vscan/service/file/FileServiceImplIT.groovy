@@ -2,21 +2,35 @@ package com.dataslab.vscan.service.file
 
 import com.dataslab.vscan.BaseIT
 import com.dataslab.vscan.dto.ValidationStatus
+import com.dataslab.vscan.infra.dynamodb.FileScanResultEntity
 import org.springframework.beans.factory.annotation.Autowired
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable
 
 import java.nio.file.Files
 
 class FileServiceImplIT extends BaseIT {
 
+
+    def originalFileName = "original_file_name.txt"
+
     @Autowired
     private FileService underTest
+
+    @Autowired
+    private DynamoDbTable<FileScanResultEntity> dbTable
+
+    def cleanup() {
+        dbTable.scan().items().forEach {
+            dbTable.deleteItem(it)
+        }
+    }
 
     def "should upload file"() {
         given:
         def tempFile = createFile()
 
         when:
-        def result = underTest.uploadFile(tempFile)
+        def result = underTest.uploadFile(tempFile, originalFileName)
 
         then:
         result != null
@@ -31,7 +45,7 @@ class FileServiceImplIT extends BaseIT {
     def "should retrieve upload file result by id"() {
         given:
         def tempFile = createFile()
-        def created = underTest.uploadFile(tempFile)
+        def created = underTest.uploadFile(tempFile, originalFileName)
         assert created.id() != null
 
         when:
@@ -56,7 +70,7 @@ class FileServiceImplIT extends BaseIT {
     def "should retrieve upload file result by hash"() {
         given:
         def tempFile = createFile()
-        def created = underTest.uploadFile(tempFile)
+        def created = underTest.uploadFile(tempFile, originalFileName)
         assert created.id() != null
 
         when:

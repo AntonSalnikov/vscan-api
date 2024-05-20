@@ -1,4 +1,4 @@
-package com.dataslab.vscan.config;
+package com.dataslab.vscan.config.aws;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

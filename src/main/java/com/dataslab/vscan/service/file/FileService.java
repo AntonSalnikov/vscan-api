@@ -19,7 +19,7 @@ public interface FileService {
      *
      * @throws FileUploadException if operation fails
      */
-    FileUploadResult uploadFile(@NonNull File file);
+    FileUploadResult uploadFile(@NonNull File file, String originalFileName);
 
     Optional<FileUploadResult> getById(@NonNull UUID id);
 

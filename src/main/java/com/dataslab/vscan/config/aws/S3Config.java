@@ -1,4 +1,4 @@
-package com.dataslab.vscan.config;
+package com.dataslab.vscan.config.aws;
 
 
 import io.awspring.cloud.autoconfigure.s3.properties.S3Properties;

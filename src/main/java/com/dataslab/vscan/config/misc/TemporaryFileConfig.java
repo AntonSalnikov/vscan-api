@@ -1,4 +1,4 @@
-package com.dataslab.vscan.config;
+package com.dataslab.vscan.config.misc;
 
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;

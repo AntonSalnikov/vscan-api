@@ -21,11 +21,11 @@ class FileServiceImpl implements FileService {
 
 
     @Override
-    public FileUploadResult uploadFile(@NonNull File file) {
-        log.info("Uploading file {}", file);
+    public FileUploadResult uploadFile(@NonNull File file, String originalFileName) {
+        log.info("Uploading file {} with original name {}", file, originalFileName);
 
         UUID key = UUID.randomUUID();
-        var checksum = fileStoragePort.uploadFile(key, file);
+        var checksum = fileStoragePort.uploadFile(key, file, originalFileName);
 
         var entity = scanResultRepository.save(FileScanResultEntity.createNew(key, file.getName(), file.length(), checksum));
 
