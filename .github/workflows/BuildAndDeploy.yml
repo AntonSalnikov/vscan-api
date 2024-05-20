@@ -82,7 +82,7 @@ jobs:
       - name: Download task definition
         if: github.ref == 'refs/heads/master'
         run: |
-          aws ecs describe-task-definition --task-definition document-handler-service --query taskDefinition > task-definition.json
+          aws ecs describe-task-definition --task-definition vscan-api-service --query taskDefinition > task-definition.json
 
       - name: Render Amazon ECS task definition
         if: github.ref == 'refs/heads/master'
