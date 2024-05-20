@@ -32,7 +32,7 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle
 
       - name: Build and Test
-        run: gradle clean build
+        run: ./gradlew clean build
 
       - name: Configure AWS credentials
         if: github.ref == 'refs/heads/main'
