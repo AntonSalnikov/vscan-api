@@ -16,7 +16,7 @@ jobs:
   promote:
     runs-on: ubuntu-latest
     env:
-      SERVICE_NAME: document-handler
+      SERVICE_NAME: vscan-api
 
     steps:
       - name: Configure AWS credentials [Prod]
@@ -31,7 +31,7 @@ jobs:
 
       - name: Download task definition
         run: |
-          aws ecs describe-task-definition --task-definition document-handler-service --query taskDefinition > task-definition.json
+          aws ecs describe-task-definition --task-definition vscan-api-service --query taskDefinition > task-definition.json
 
       - name: Render Amazon ECS task definition [Prod]
         id: render-container
@@ -46,5 +46,5 @@ jobs:
         with:
           task-definition: ${{ steps.render-container.outputs.task-definition }}
           service: ${{ env.SERVICE_NAME }}
-          cluster: "war-crimes-cluster"
+          cluster: "vscan-api-cluster"
           wait-for-service-stability: true
