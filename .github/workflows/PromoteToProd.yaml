@@ -1,0 +1,59 @@
+name: Promote image to Prod
+permissions:
+  id-token: write
+  contents: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      image-tag:
+        description: 'Docker image tag to be promoted'
+        required: true
+        type: string
+
+jobs:
+
+  promote:
+    runs-on: ubuntu-latest
+    env:
+      SERVICE_NAME: document-handler
+
+    steps:
+      - name: Configure AWS credentials [TEST]
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: eu-central-1
+          role-to-assume: arn:aws:iam::721949124470:role/github-actions-AntonSalnikov-DocumentHandler
+
+      - name: Login to Amazon ECR [Test]
+        id: login-test-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Pull image [Test]
+        env:
+          ECR_REGISTRY: ${{ steps.login-test-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ env.SERVICE_NAME }}
+        run: |
+          echo pulling image: $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.event.inputs.image-tag }}
+          docker pull $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.event.inputs.image-tag }} 
+      
+
+      - name: Configure AWS credentials [Prod]
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: eu-central-1
+          role-to-assume: arn:aws:iam::444672554014:role/github-actions-AntonSalnikov-DocumentHandler
+
+      - name: Login to Amazon ECR [Prod]
+        id: login-prod-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Push image [Prod]
+        env:
+          TEST_ECR_REGISTRY: ${{ steps.login-test-ecr.outputs.registry }}
+          ECR_REGISTRY: ${{ steps.login-prod-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ env.SERVICE_NAME }}
+        run: |
+          echo pushing image: $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.event.inputs.image-tag }} 
+          docker tag $TEST_ECR_REGISTRY/$ECR_REPOSITORY:${{ github.event.inputs.image-tag }} $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.event.inputs.image-tag }}
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.event.inputs.image-tag }}

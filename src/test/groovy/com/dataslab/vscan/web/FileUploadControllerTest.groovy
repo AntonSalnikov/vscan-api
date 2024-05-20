@@ -46,7 +46,7 @@ class FileUploadControllerTest extends BaseControllerSpec {
         result
                 .andExpect(status().isAccepted())
                 .andExpect(content().json(responsePayload, true))
-                .andDo(documentSetup("upload-file",
+                .andDo(documentSetup("get-file-upload-result",
                         //requestHeaders(getAccessHeaderDocumentation()),
                         responseFields(
                                 prepareFileResultFields("")

@@ -1,0 +1,50 @@
+name: Deploy image to Prod
+permissions:
+  id-token: write
+  contents: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      image-tag:
+        description: 'Docker image tag to be deployed'
+        required: true
+        type: string
+
+jobs:
+
+  promote:
+    runs-on: ubuntu-latest
+    env:
+      SERVICE_NAME: document-handler
+
+    steps:
+      - name: Configure AWS credentials [Prod]
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: eu-central-1
+          role-to-assume: arn:aws:iam::444672554014:role/github-actions-AntonSalnikov-DocumentHandler
+
+      - name: Login to Amazon ECR [Prod]
+        id: login-prod-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Download task definition
+        run: |
+          aws ecs describe-task-definition --task-definition document-handler-service --query taskDefinition > task-definition.json
+
+      - name: Render Amazon ECS task definition [Prod]
+        id: render-container
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: ${{ env.SERVICE_NAME }}
+          image: ${{ steps.login-prod-ecr.outputs.registry }}/${{ env.SERVICE_NAME }}:${{ github.event.inputs.image-tag }}
+
+      - name: Deploy to Prod env
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.render-container.outputs.task-definition }}
+          service: ${{ env.SERVICE_NAME }}
+          cluster: "war-crimes-cluster"
+          wait-for-service-stability: true
