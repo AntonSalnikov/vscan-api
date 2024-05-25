@@ -1,0 +1,9 @@
+spring:
+  cloud:
+    aws:
+      parameterstore:
+        region: eu-central-1
+  config:
+    import:
+      - aws-parameterstore:/config/${spring.application.name}_test
+#      - aws-secretsmanager:/config/${spring.application.name}_test

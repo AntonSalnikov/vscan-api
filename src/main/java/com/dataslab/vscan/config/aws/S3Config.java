@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
+import software.amazon.awssdk.services.s3.internal.crt.S3CrtAsyncClient;
 import software.amazon.awssdk.transfer.s3.S3TransferManager;
 
 @Configuration
@@ -19,10 +20,10 @@ public class S3Config {
     @Primary
     public S3AsyncClient s3AsyncClient(S3Properties s3Properties,
                                        AwsCredentialsProvider provider) {
-
+        log.info("Creating S3AsyncClient bean with {}", s3Properties);
         var region = AwsUtil.region(s3Properties.getRegion());
 
-        return  S3AsyncClient.builder()
+        return S3CrtAsyncClient.builder()
                 .credentialsProvider(provider)
                 .region(region)
                 .endpointOverride(s3Properties.getEndpoint()) //Used for tests. If null fall back to default.

@@ -33,7 +33,7 @@ public class AwsDynamoDBConfig {
     @Name("fileScanResultTable")
     public DynamoDbTable<FileScanResultEntity> fileScanResultTable(DynamoDbClient dynamoDbClient,
                                                                    CustomDynamoDbProperties properties) {
-
+        log.info("Creating DynamoDB Table Bean with {}", properties);
         DynamoDbEnhancedClient dynamoDbEnhancedClient = DynamoDbEnhancedClient.builder()
                 .dynamoDbClient(dynamoDbClient)
                 .build();

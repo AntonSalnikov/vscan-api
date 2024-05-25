@@ -4,7 +4,6 @@ import com.dataslab.vscan.config.aws.S3BucketProperties;
 import com.dataslab.vscan.exception.FileUploadException;
 import com.dataslab.vscan.service.file.FileStoragePort;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -22,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class S3Adapter implements FileStoragePort {
 
@@ -33,6 +31,15 @@ public class S3Adapter implements FileStoragePort {
 
     private final S3TransferManager s3TransferManager;
     private final S3BucketProperties s3BucketProperties;
+
+
+    public S3Adapter(S3TransferManager s3TransferManager, S3BucketProperties s3BucketProperties) {
+        log.info("Creating S3Adapter with {}", s3BucketProperties);
+
+        this.s3TransferManager = s3TransferManager;
+        this.s3BucketProperties = s3BucketProperties;
+    }
+
 
     @Override
     public String uploadFile(@NonNull UUID key, @NonNull File file, String originalFileName) {
