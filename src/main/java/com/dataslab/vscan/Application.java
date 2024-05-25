@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class VscanApiApplication {
+public class Application {
 
     public static void main(String[] args) {
-        SpringApplication.run(VscanApiApplication.class, args);
+        SpringApplication.run(Application.class, args);
     }
 
 }

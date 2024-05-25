@@ -1,5 +1,6 @@
 package com.dataslab.vscan.web
 
+import com.dataslab.vscan.config.security.AuthenticationService
 import com.dataslab.vscan.dto.ValidationStatus
 import com.dataslab.vscan.service.domain.FileUploadResult
 import com.dataslab.vscan.service.file.FileService
@@ -9,11 +10,12 @@ import org.springframework.http.MediaType
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.test.web.servlet.ResultActions
 
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields
 
 @WebMvcTest([FileUploadController])
 class FileUploadControllerTest extends BaseControllerSpec {
@@ -38,6 +40,7 @@ class FileUploadControllerTest extends BaseControllerSpec {
         when:
         ResultActions result = this.mockMvc.perform(
                 multipart(basePath + "/upload").file(file).contentType(MediaType.MULTIPART_FORM_DATA)
+                        .header(AuthenticationService.AUTH_TOKEN_HEADER_NAME, apiKey)
         )
 
         then:
@@ -47,7 +50,7 @@ class FileUploadControllerTest extends BaseControllerSpec {
                 .andExpect(status().isAccepted())
                 .andExpect(content().json(responsePayload, true))
                 .andDo(documentSetup("get-file-upload-result",
-                        //requestHeaders(getAccessHeaderDocumentation()),
+                        requestHeaders(prepareApiKeyHeader()),
                         responseFields(
                                 prepareFileResultFields("")
                         ))
@@ -62,6 +65,7 @@ class FileUploadControllerTest extends BaseControllerSpec {
         when:
         ResultActions result = this.mockMvc.perform(
                 get(basePath + "/{fileUploadResultId}", fileUploadResultId)
+                        .header(AuthenticationService.AUTH_TOKEN_HEADER_NAME, apiKey)
         )
 
         then:
@@ -73,7 +77,7 @@ class FileUploadControllerTest extends BaseControllerSpec {
                 .andExpect(status().isOk())
                 .andExpect(content().json(responsePayload, true))
                 .andDo(documentSetup("upload-file",
-                        //requestHeaders(getAccessHeaderDocumentation()),
+                        requestHeaders(prepareApiKeyHeader()),
                         responseFields(
                                 prepareFileResultFields("")
                         ))

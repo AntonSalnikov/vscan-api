@@ -1,10 +1,13 @@
 package com.dataslab.vscan.web
 
+import com.dataslab.vscan.config.security.AuthenticationService
 import com.dataslab.vscan.dto.ValidationStatus
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.restdocs.RestDocsAutoConfiguration
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcAutoConfiguration
 import org.springframework.context.annotation.Import
+import org.springframework.restdocs.headers.HeaderDocumentation
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
 import org.springframework.restdocs.operation.preprocess.Preprocessors
 import org.springframework.restdocs.payload.JsonFieldType
@@ -26,6 +29,9 @@ class BaseControllerSpec extends Specification {
     @Autowired
     protected MockMvc mockMvc
 
+    @Value("\${vscan-api.api-key}")
+    protected String apiKey
+
     static UUID fileUploadResultId = UUID.fromString("65d634c3-d992-44cb-b991-132f2942d226")
 
 
@@ -46,6 +52,8 @@ class BaseControllerSpec extends Specification {
         ]
     }
 
+    //-------------Documentation: Path and URI variables----------------
+
     def static fieldWithPath(String pathValue, JsonFieldType jsonFieldType = JsonFieldType.STRING, String prefix = "",
                              String description = "", List<String> constraints = [], String values = " - ") {
         PayloadDocumentation.fieldWithPath("${prefix}${pathValue}")
@@ -53,6 +61,14 @@ class BaseControllerSpec extends Specification {
                 .description(description)
                 .attributes(Attributes.key("constraints").value(constraints))
                 .attributes(Attributes.key("values").value(values))
+    }
+
+
+    //-------------Documentation: Headers----------------
+
+    def static prepareApiKeyHeader() {
+        HeaderDocumentation.headerWithName(AuthenticationService.AUTH_TOKEN_HEADER_NAME).description(
+                "API key header name")
     }
 
 }

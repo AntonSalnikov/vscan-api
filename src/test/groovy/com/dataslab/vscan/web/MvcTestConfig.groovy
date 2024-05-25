@@ -17,6 +17,7 @@ import spock.lang.Specification
 @ComponentScan([
         "com.dataslab.vscan.web",
         "com.dataslab.vscan.config.misc",
+        "com.dataslab.vscan.config.security",
         "com.dataslab.vscan.config.web"
 ])
 class MvcTestConfig extends Specification {
