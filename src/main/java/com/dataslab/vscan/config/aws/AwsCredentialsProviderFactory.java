@@ -21,7 +21,8 @@ public class AwsCredentialsProviderFactory {
                 EnvironmentVariableCredentialsProvider.create(),
                 InstanceProfileCredentialsProvider.create(),
                 ProfileCredentialsProvider.create(AwsUtil.profile(credentialsProperties.getProfile())),
-                SystemPropertyCredentialsProvider.create()
+                SystemPropertyCredentialsProvider.create(),
+                ContainerCredentialsProvider.builder().build()
         );
     }
 }
