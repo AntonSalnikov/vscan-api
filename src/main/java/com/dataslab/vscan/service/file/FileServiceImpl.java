@@ -31,6 +31,15 @@ class FileServiceImpl implements FileService {
         UUID key = UUID.randomUUID();
         var checksum = fileStoragePort.uploadFile(key, file, originalFileName);
 
+        var mayBePresent = scanResultRepository.getByHash(checksum);
+        if(mayBePresent.isPresent()) {
+            log.info("The same file is already present skipping further processing");
+            var current = mayBePresent.get();
+            return new FileUploadResult(current.getId(), current.getValidationStatus() ,checksum);
+
+            //TODO: send web-hook
+        }
+
         var entity = scanResultRepository.save(FileScanResultEntity.createNew(key, file.getName(), file.length(), checksum));
 
         log.info("Successfully processed {}", entity);
