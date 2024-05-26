@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -60,9 +61,10 @@ class FileServiceImpl implements FileService {
                     .orElseThrow(() -> new IllegalStateException("No entity is found with id %s".formatted(key)));
 
             file = fileStoragePort.downloadFile(bucket, key.toString());
-            mailPort.sendFile(key, file);
+            //mailPort.sendFile(key, file);
 
             entity.setValidationStatus(ValidationStatus.PROCESSING);
+            entity.setModifiedAt(Instant.now());
             scanResultRepository.save(entity);
         } finally {
             deleteFile(file);
