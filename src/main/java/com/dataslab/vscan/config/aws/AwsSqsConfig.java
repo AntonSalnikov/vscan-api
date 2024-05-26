@@ -4,6 +4,8 @@ import com.dataslab.vscan.config.web.WebMvcConfig;
 import io.awspring.cloud.autoconfigure.sqs.SqsProperties;
 import io.awspring.cloud.sqs.config.SqsListenerConfigurer;
 import io.awspring.cloud.sqs.config.SqsMessageListenerContainerFactory;
+import io.awspring.cloud.sqs.listener.QueueNotFoundStrategy;
+import io.awspring.cloud.sqs.operations.SqsTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +29,15 @@ public class AwsSqsConfig {
                 .credentialsProvider(provider)
                 .region(region)
                 .endpointOverride(sqsProperties.getEndpoint()) //Used for tests. If null fall back to default.
+                .build();
+    }
+
+    @Bean
+    @Primary
+    public SqsTemplate sqsTemplate(SqsAsyncClient sqsAsyncClient) {
+        return SqsTemplate.builder()
+                .sqsAsyncClient(sqsAsyncClient)
+                .configure(o -> o.queueNotFoundStrategy(QueueNotFoundStrategy.FAIL))
                 .build();
     }
 
