@@ -20,7 +20,7 @@ public class FileUploadListener {
 
     private final FileService fileService;
 
-    @SqsListener(queueNames = "${spring.cloud.aws.sqs.queue.file-data}")
+    @SqsListener(queueNames = "${spring.cloud.aws.sqs.queue.file-upload-queue}", factory = "defaultSqsListenerContainerFactory")
     public void listen(@Payload S3EventNotification event) {
         log.info("Consuming event {}", event);
 

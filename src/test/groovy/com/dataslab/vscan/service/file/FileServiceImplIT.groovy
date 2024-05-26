@@ -31,7 +31,6 @@ class FileServiceImplIT extends BaseIT {
 
         when:
         def result = underTest.uploadFile(tempFile, originalFileName)
-        sleep(5000)
 
         then:
         result != null

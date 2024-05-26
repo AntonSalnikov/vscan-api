@@ -10,13 +10,13 @@ spring:
       sqs:
         region: eu-central-1
         queue:
-          file-data: FileData
+          file-upload-queue: ile-upload-queue-test
       s3:
         region: eu-central-1
-        dirty-bucket: vscan-dirty
+        dirty-bucket: vscan-api-dirty-storage-test
       dynamodb:
         region: eu-central-1
-        file-scan-result-table: FileScanResults
+        file-scan-result-table: FileScanResults-test
   mail:
     port: 587 #change in SSM
     host: smtp.vscan.dataslab.eu #change in SSM
