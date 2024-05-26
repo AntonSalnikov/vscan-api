@@ -10,7 +10,7 @@ spring:
       sqs:
         region: eu-central-1
         queue:
-          file-upload-queue: ile-upload-queue-test
+          file-upload-queue: file-upload-queue-test
       s3:
         region: eu-central-1
         dirty-bucket: vscan-api-dirty-storage-test

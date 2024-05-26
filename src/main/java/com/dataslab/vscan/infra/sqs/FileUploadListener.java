@@ -6,7 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
-import software.amazon.awssdk.eventnotifications.s3.model.*;
+import software.amazon.awssdk.eventnotifications.s3.model.S3;
+import software.amazon.awssdk.eventnotifications.s3.model.S3Object;
+import software.amazon.awssdk.eventnotifications.s3.model.S3Bucket;
+import software.amazon.awssdk.eventnotifications.s3.model.S3EventNotificationRecord;
+
 
 import java.util.List;
 import java.util.Optional;
