@@ -24,8 +24,8 @@ public class S3Config {
         var region = AwsUtil.region(s3Properties.getRegion());
 
         return S3CrtAsyncClient.builder()
-                .credentialsProvider(provider)
                 .region(region)
+                .credentialsProvider(provider)
                 .endpointOverride(s3Properties.getEndpoint()) //Used for tests. If null fall back to default.
                 .build();
     }

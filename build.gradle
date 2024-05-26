@@ -63,8 +63,8 @@ dependencies {
     implementation 'org.springframework.modulith:spring-modulith-starter-core'
 
     implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:${springCloudAwsVersion}")
-    // Replace the following with the starter dependencies of specific modules you wish to use
-    //implementation 'io.awspring.cloud:spring-cloud-aws-starter-sqs'
+
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter-sqs'
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-dynamodb'
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3'
     implementation 'software.amazon.awssdk:s3-transfer-manager'
@@ -73,6 +73,8 @@ dependencies {
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-secrets-manager'
 
     implementation 'org.apache.commons:commons-lang3:3.14.0'
+
+    implementation 'software.amazon.awssdk:s3-event-notifications:2.25.60' //should be provided in next versions of spring cloud
 
     compileOnly 'org.projectlombok:lombok'
 

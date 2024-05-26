@@ -7,6 +7,10 @@ spring:
       max-request-size: 10MB
   cloud:
     aws:
+      sqs:
+        region: eu-central-1
+        queue:
+          file-data: FileData
       s3:
         region: eu-central-1
         dirty-bucket: vscan-dirty
@@ -15,7 +19,7 @@ spring:
         file-scan-result-table: FileScanResults
   mail:
     port: 587 #change in SSM
-    host: smtp.gmail.com #change in SSM
+    host: smtp.vscan.dataslab.eu #change in SSM
     from: noreply@vscan.dataslab.eu
     to: seg@vscan.dataslab.eu
     subject: "Scanning file. File id: "

@@ -14,11 +14,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.UUID;
+
+import static com.dataslab.vscan.service.file.TempFileUtils.createTempFile;
+import static com.dataslab.vscan.service.file.TempFileUtils.deleteFile;
 
 @RestController
 @RequestMapping("/files")
@@ -47,15 +50,18 @@ public class FileUploadController {
                 .filter(StringUtils::isNotBlank)
                 .orElseGet(fileId::toString);
 
+        File tempFile = null;
         try {
-            var tempFile = Files.createTempFile(temporaryDirectory, fileId.toString(), TEMP_FILE_SUFFIX).toFile();
+
+            tempFile = createTempFile(temporaryDirectory);
             file.transferTo(tempFile);
 
             return convert(fileService.uploadFile(tempFile, originalFileName));
-
         } catch (IOException e) {
             log.error("Error appeared while loading file with originalFileName {}", originalFileName, e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error appeared while loading file");
+        } finally {
+            deleteFile(tempFile);
         }
     }
 

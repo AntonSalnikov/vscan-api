@@ -24,4 +24,6 @@ public interface FileService {
     Optional<FileUploadResult> getById(@NonNull UUID id);
 
     Optional<FileUploadResult> getBySha256Hash(@NonNull String hash);
+
+    void sendToScan(@NonNull String bucket, @NonNull UUID key);
 }

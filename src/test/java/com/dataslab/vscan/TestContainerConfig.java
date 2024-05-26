@@ -12,8 +12,7 @@ import org.testcontainers.utility.DockerImageName;
 
 import java.util.stream.Stream;
 
-import static org.testcontainers.containers.localstack.LocalStackContainer.Service.DYNAMODB;
-import static org.testcontainers.containers.localstack.LocalStackContainer.Service.S3;
+import static org.testcontainers.containers.localstack.LocalStackContainer.Service.*;
 
 @Slf4j
 public class TestContainerConfig {
@@ -25,7 +24,7 @@ public class TestContainerConfig {
         private static final Slf4jLogConsumer logConsumer = new Slf4jLogConsumer(log);
 
         private static final LocalStackContainer localStackContainer = new LocalStackContainer(LOCALSTACK_IMAGE_NAME)
-                .withServices(DYNAMODB, S3)
+                .withServices(DYNAMODB, S3, SQS)
                 .withLogConsumer(logConsumer);
 
         @Override
@@ -42,8 +41,11 @@ public class TestContainerConfig {
             TestPropertyValues.of(
                     "spring.cloud.aws.s3.region:" + localStackContainer.getRegion(),
                     "spring.cloud.aws.dynamodb.region:" + localStackContainer.getRegion(),
+                    "spring.cloud.aws.sqs.region:" + localStackContainer.getRegion(),
+
                     "spring.cloud.aws.s3.endpoint:" + localStackContainer.getEndpoint(),
-                    "spring.cloud.aws.dynamodb.endpoint:" + localStackContainer.getEndpoint()
+                    "spring.cloud.aws.dynamodb.endpoint:" + localStackContainer.getEndpoint(),
+                    "spring.cloud.aws.sqs.endpoint:" + localStackContainer.getEndpoint()
             ).applyTo(applicationContext);
         }
     }

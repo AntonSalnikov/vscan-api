@@ -1,47 +1,45 @@
 package com.dataslab.vscan.config.aws;
 
+import com.dataslab.vscan.config.web.WebMvcConfig;
+import io.awspring.cloud.autoconfigure.sqs.SqsProperties;
+import io.awspring.cloud.sqs.config.SqsListenerConfigurer;
+import io.awspring.cloud.sqs.config.SqsMessageListenerContainerFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.services.sqs.SqsAsyncClient;
 
 @Configuration
+@Slf4j
 public class AwsSqsConfig {
 
 
-//    @Bean(destroyMethod = "shutdown")
-//    @Primary
-//    public AmazonSQSAsync amazonSQSAsync(AwsRegionProperties regionProperties,
-//                                         AwsCredentialsProperties awsCredentialsProperties) {
-//
-//        return AmazonSQSAsyncClient.asyncBuilder()
-//                .withCredentials(AwsCredentialsProviderFactory.provider(awsCredentialsProperties.getProfileName()))
-//                .withRegion(regionProperties.getStatic())
-//                .build();
-//    }
-//
-//    @Bean
-//    @Primary
-//    public QueueMessagingTemplate SqsQueueSender(AmazonSQSAsync amazonSQSAsync, MessageConverter messageConverter) {
-//        QueueMessagingTemplate template = new QueueMessagingTemplate(amazonSQSAsync);
-//        template.setMessageConverter(messageConverter);
-//
-//        return template;
-//    }
-//
-//    @Bean
-//    @Primary
-//    public MessageConverter messageConverter() {
-//        MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
-//
-//        converter.setSerializedPayloadClass(String.class);
-//        converter.setObjectMapper(WebMvcConfig.OBJECT_MAPPER);
-//
-//        return converter;
-//    }
-//
-//    @Bean
-//    @Primary
-//    public QueueMessageHandlerFactory queueMessageHandlerFactory(MessageConverter messageConverter) {
-//        QueueMessageHandlerFactory factory = new QueueMessageHandlerFactory();
-//        factory.setMessageConverters(Collections.singletonList(messageConverter));
-//        return factory;
-//    }
+    @Primary
+    @Bean
+    public SqsAsyncClient amazonSQSAsync(AwsCredentialsProvider provider,
+                                         SqsProperties sqsProperties) {
+        log.info("Creating SqsAsyncClient bean with {}", sqsProperties);
+        var region = AwsUtil.region(sqsProperties.getRegion());
+
+        return SqsAsyncClient.builder()
+                .credentialsProvider(provider)
+                .region(region)
+                .endpointOverride(sqsProperties.getEndpoint()) //Used for tests. If null fall back to default.
+                .build();
+    }
+
+    @Bean
+    SqsListenerConfigurer configurer() {
+        return registrar -> registrar.setObjectMapper(WebMvcConfig.OBJECT_MAPPER);
+    }
+
+    @Bean
+    SqsMessageListenerContainerFactory<Object> defaultSqsListenerContainerFactory(SqsAsyncClient sqsAsyncClient) {
+        return SqsMessageListenerContainerFactory
+                .builder()
+                .sqsAsyncClient(sqsAsyncClient)
+                .build();
+    }
 }
