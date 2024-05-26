@@ -24,6 +24,7 @@ spring:
     to: seg@vscan.dataslab.eu
     subject: "Scanning file. File id: "
 
+
 management:
   endpoints:
     web:
@@ -33,6 +34,9 @@ management:
   endpoint:
     health:
       show-details: always
+  health:
+    mail:
+      enabled: false #remove after fixing smtp server
 
 logging:
   level:
