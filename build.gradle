@@ -66,6 +66,9 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     implementation 'org.springframework.modulith:spring-modulith-starter-core'
 
+    implementation 'org.springframework.boot:spring-boot-starter-integration'
+    implementation 'org.springframework.integration:spring-integration-ip'
+
     implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:${springCloudAwsVersion}")
 
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-sqs'

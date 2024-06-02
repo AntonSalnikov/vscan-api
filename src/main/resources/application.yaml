@@ -43,4 +43,7 @@ logging:
     com.dataslab.vscan: debug
     org.springframework: info
 
+tcp:
+  server:
+    port: 8081
 
