@@ -35,7 +35,7 @@ class FileServiceImpl implements FileService {
         var mayBePresent = checkIfPresent(file);
 
         if(mayBePresent.isPresent()) {
-            log.info("The same file result {} is already present skipping further processing", mayBePresent);
+            log.info("The same file result {} is already present. Skipping further processing", mayBePresent);
             return mayBePresent.get();
         }
 
