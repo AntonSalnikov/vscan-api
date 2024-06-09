@@ -38,6 +38,13 @@ class FileServiceImplIT extends BaseIT {
         result.sha256Hash() != null
         result.validationStatus() == ValidationStatus.QUEUED
 
+        and:"do not perform new file upload if file was already persisted"
+        when:
+        def sameResult = underTest.uploadFile(tempFile, "anotherFileName.tmp")
+
+        then:
+        sameResult == result
+        
         cleanup:
         tempFile.delete()
     }

@@ -1,6 +1,7 @@
 package com.dataslab.vscan.infra.dynamodb;
 
 import com.dataslab.vscan.dto.ValidationStatus;
+import com.dataslab.vscan.service.domain.FileUploadResult;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -48,5 +49,9 @@ public class FileScanResultEntity {
         entity.setSha256Hash(sha256Hash);
 
         return entity;
+    }
+
+    public FileUploadResult to() {
+        return new FileUploadResult(id, validationStatus, sha256Hash);
     }
 }
