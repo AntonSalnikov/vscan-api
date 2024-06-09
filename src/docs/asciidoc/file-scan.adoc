@@ -1,0 +1,63 @@
+[[file-scan]]
+== File Upload Result
+
+The `File Upload Result` resource is used by clients in next cases:
+
+ - <<upload-file>>
+ - <<get-file-upload-result>>
+
+
+[[upload-file]]
+=== Upload file for scan
+
+A `POST` request for uploading new file for scan.
+
+==== Example request
+
+include::{snippets}/upload-file/curl-request.adoc[]
+
+==== Request headers
+
+include::{snippets}/upload-file/request-headers.adoc[]
+
+==== Request description
+
+include::{snippets}/upload-file/http-request.adoc[]
+
+==== Example response
+
+include::{snippets}/upload-file/http-response.adoc[]
+
+==== Response structure
+
+include::{snippets}/upload-file/response-fields.adoc[]
+
+
+[[get-file-upload-result]]
+=== Get file upload result by id
+
+A `GET` request for retrieving `File Upload Result` by its id. Returns `404 Not Found` if no item is present with such id.
+
+==== Example request
+
+include::{snippets}/get-file-upload-result/curl-request.adoc[]
+
+==== Request headers
+
+include::{snippets}/get-file-upload-result/request-headers.adoc[]
+
+==== Request path params
+
+include::{snippets}/get-file-upload-result/path-parameters.adoc[]
+
+==== Request description
+
+include::{snippets}/get-file-upload-result/http-request.adoc[]
+
+==== Example response
+
+include::{snippets}/get-file-upload-result/http-response.adoc[]
+
+==== Response structure
+
+include::{snippets}/get-file-upload-result/response-fields.adoc[]

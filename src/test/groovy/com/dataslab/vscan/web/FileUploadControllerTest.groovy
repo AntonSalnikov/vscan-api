@@ -10,10 +10,11 @@ import org.springframework.http.MediaType
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.test.web.servlet.ResultActions
 
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
@@ -49,7 +50,7 @@ class FileUploadControllerTest extends BaseControllerSpec {
         result
                 .andExpect(status().isAccepted())
                 .andExpect(content().json(responsePayload, true))
-                .andDo(documentSetup("get-file-upload-result",
+                .andDo(documentSetup("upload-file",
                         requestHeaders(prepareApiKeyHeader()),
                         responseFields(
                                 prepareFileResultFields("")
@@ -76,8 +77,9 @@ class FileUploadControllerTest extends BaseControllerSpec {
         result
                 .andExpect(status().isOk())
                 .andExpect(content().json(responsePayload, true))
-                .andDo(documentSetup("upload-file",
+                .andDo(documentSetup("get-file-upload-result",
                         requestHeaders(prepareApiKeyHeader()),
+                        pathParameters(resultUploadPathIdPathParam),
                         responseFields(
                                 prepareFileResultFields("")
                         ))

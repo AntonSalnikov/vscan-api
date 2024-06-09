@@ -78,9 +78,9 @@ For more status codes, see the https://www.w3.org/Protocols/rfc2616/rfc2616-sec1
 [[authentication-description]]
 == Authentication
 
-TODO
+To access API clients should use API key in HTTP header `X-API-KEY`
 
 [[resources]]
 = Resources
 
-include::resources/auth.adoc[]
+include::file-scan.adoc[]

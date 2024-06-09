@@ -12,6 +12,7 @@ import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
 import org.springframework.restdocs.operation.preprocess.Preprocessors
 import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation
+import org.springframework.restdocs.request.RequestDocumentation
 import org.springframework.restdocs.snippet.Attributes
 import org.springframework.restdocs.snippet.Snippet
 import org.springframework.test.context.ActiveProfiles
@@ -71,4 +72,13 @@ class BaseControllerSpec extends Specification {
                 "API key header name")
     }
 
+
+    //-------------Path params ---------------------------
+    static def resultUploadPathIdPathParam = parameterWithName('fileUploadResultId', "Unique file upload reult id")
+
+    def static parameterWithName(String name, String description = "", String value = " - ") {
+        RequestDocumentation.parameterWithName(name)
+                .description(description)
+                .attributes(Attributes.key("values").value(" - "))
+    }
 }
