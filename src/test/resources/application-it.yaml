@@ -1,6 +1,8 @@
 spring:
   application:
     name: vscan-api
+  mail:
+    host: localhost
 
 
 logging:
