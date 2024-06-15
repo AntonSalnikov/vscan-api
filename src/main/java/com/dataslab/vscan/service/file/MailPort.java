@@ -7,7 +7,6 @@ import java.util.UUID;
 
 public interface MailPort {
 
-
     void sendFile(@NonNull UUID messageId,
                   @NonNull File attachment);
 }

@@ -71,7 +71,7 @@ class FileServiceImpl implements FileService {
                     .orElseThrow(() -> new IllegalStateException("No entity is found with id %s".formatted(key)));
 
             file = fileStoragePort.downloadFile(bucket, key.toString());
-            //mailPort.sendFile(key, file);
+            mailPort.sendFile(key, file);
 
             entity.setValidationStatus(ValidationStatus.PROCESSING);
             entity.setModifiedAt(Instant.now());

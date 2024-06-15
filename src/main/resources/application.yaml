@@ -18,10 +18,10 @@ spring:
         region: eu-central-1
         file-scan-result-table: FileScanResults-test
   mail:
-    port: 587 #change in SSM
-    host: smtp.vscan.dataslab.eu #change in SSM
-    from: noreply@vscan.dataslab.eu
-    to: seg@vscan.dataslab.eu
+    port: 587
+    host: mriya.organic-invest-llc.com #change in SSM
+    from: noreply@mriya.organic-invest-llc.com
+    to: seg@mriya.organic-invest-llc.com
     subject: "Scanning file. File id: "
 
 
