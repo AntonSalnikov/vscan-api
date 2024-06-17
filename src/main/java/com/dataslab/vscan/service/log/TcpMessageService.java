@@ -5,7 +5,6 @@ import com.dataslab.vscan.service.file.FileScanResultRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.UUID;
 
 @Service
@@ -24,14 +23,14 @@ public class TcpMessageService {
         var validationStatus = ValidationStatus.VALID;
 
         //persist verdict
-        fileScanResultRepository.getById(messageId)
-                .ifPresentOrElse(file -> {
-                    file.setValidationStatus(validationStatus);
-                    file.setModifiedAt(Instant.now());
-                    fileScanResultRepository.save(file);
-
-                    //TODO: trigger webhook
-                    },
-                () -> log.warn("No file scan result found")); //TODO: consider to throw exception
+//        fileScanResultRepository.getById(messageId)
+//                .ifPresentOrElse(file -> {
+//                    file.setValidationStatus(validationStatus);
+//                    file.setModifiedAt(Instant.now());
+//                    fileScanResultRepository.save(file);
+//
+//                    //TODO: trigger webhook
+//                    },
+//                () -> log.warn("No file scan result found")); //TODO: consider to throw exception
     }
 }
