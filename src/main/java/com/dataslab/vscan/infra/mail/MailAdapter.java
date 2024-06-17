@@ -36,6 +36,7 @@ public class MailAdapter implements MailPort {
             helper.setTo(mailProperties.getTo());
             helper.setSubject(mailProperties.getSubject().concat(messageId.toString()));
             helper.addAttachment(messageId.toString(), attachment);
+            helper.setText("");
 
             mimeMessage.setHeader(MESSAGE_ID_HEADER_NAME, "<%s>".formatted(messageId));
             mailSender.send(mimeMessage);
