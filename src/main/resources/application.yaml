@@ -18,7 +18,7 @@ spring:
         region: eu-central-1
         file-scan-result-table: FileScanResults-test
   mail:
-    port: 25
+    port: 2525
     host: mriya.organic-invest-llc.com #change in SSM
     from: noreply@mriya.organic-invest-llc.com
     to: seg@mriya.organic-invest-llc.com
