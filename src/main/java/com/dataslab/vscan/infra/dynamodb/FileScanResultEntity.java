@@ -25,6 +25,10 @@ public class FileScanResultEntity {
     private String sha256Hash;
     private ValidationStatus validationStatus = ValidationStatus.QUEUED;
 
+    private String verdict;
+    private String segHash;
+    private Instant verdictReceivedAt;
+
     private Instant createdAt = Instant.now();
     private Instant modifiedAt;
 

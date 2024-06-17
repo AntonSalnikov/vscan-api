@@ -4,6 +4,6 @@ public enum ValidationStatus {
 
     QUEUED,
     PROCESSING,
-    VALID,
+    FINISHED,
     FAILED
 }

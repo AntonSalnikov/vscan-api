@@ -7,6 +7,7 @@ import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
 
 import java.util.Map;
+import java.util.Optional;
 
 import static com.dataslab.vscan.config.misc.TcpIntegrationConfig.TCP_SYSLOG_CHANNEL;
 
@@ -19,8 +20,13 @@ public class TCPMessageEndpoint {
 
 
     @ServiceActivator(inputChannel = TCP_SYSLOG_CHANNEL)
-    public void process(Map<Object, Object> message) {
+    public void process(Map<String, String> message) {
         log.debug("Received message: {}", message);
+
+        var payload = Optional.ofNullable(message.get(SegLogParser.SYSLOG_UNDECODED_KEY))
+                .orElseThrow(() -> new IllegalStateException("No syslog payload is found."));
+        messageService.process(SegLogParser.parse(payload));
+
     }
 
 }
