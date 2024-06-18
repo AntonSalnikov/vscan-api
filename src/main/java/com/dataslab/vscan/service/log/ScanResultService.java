@@ -23,7 +23,7 @@ public class ScanResultService {
         //persist verdict
         fileScanResultRepository.getById(fileVerificationResult.messageId())
                 .ifPresentOrElse(file -> {
-                    file.setValidationStatus(ValidationStatus.FINISHED);
+                    file.setValidationStatus(resolve(fileVerificationResult.verdict().ESAAMPVerdict()));
 
                     file.setSegHash(fileVerificationResult.hash());
                     file.setVerdict(VerdictEntity.toEntity(fileVerificationResult.verdict()));
@@ -35,5 +35,14 @@ public class ScanResultService {
                     //TODO: trigger webhook
                     },
                 () -> log.warn("No file scan result found")); //TODO: consider to throw exception
+    }
+
+    private static ValidationStatus resolve(String ESAAMPVerdict) {
+
+        if("FA_PENDING".equals(ESAAMPVerdict)) {
+            return ValidationStatus.PROCESSING;
+        }
+
+        return ValidationStatus.FINISHED;
     }
 }
