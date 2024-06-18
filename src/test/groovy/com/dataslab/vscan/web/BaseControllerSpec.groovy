@@ -1,6 +1,7 @@
 package com.dataslab.vscan.web
 
 import com.dataslab.vscan.config.security.AuthenticationService
+import com.dataslab.vscan.dto.ScanResult
 import com.dataslab.vscan.dto.ValidationStatus
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -49,7 +50,9 @@ class BaseControllerSpec extends Specification {
                 fieldWithPath("id", JsonFieldType.STRING, prefix, "File upload result id"),
                 fieldWithPath("validationStatus", JsonFieldType.STRING, prefix, "Current validation status",
                 [], "Values: ${ValidationStatus.values().toList()}"),
-                fieldWithPath("sha256Hash", JsonFieldType.STRING, prefix, "SHA256 hash value of the uploaded file")
+                fieldWithPath("sha256Hash", JsonFieldType.STRING, prefix, "SHA256 hash value of the uploaded file"),
+                fieldWithPath("scanResult", JsonFieldType.STRING, prefix, "File scan result",
+                        [], "Values: ${ScanResult.values().toList()}"),
         ]
     }
 

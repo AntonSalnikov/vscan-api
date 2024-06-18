@@ -12,4 +12,8 @@ class ContentPayload {
     def createFileUploadResponse() {
         rm.load('content/file_upload_response.json')
     }
+
+    def createFileUploadWitResultResponse() {
+        rm.load('content/file_upload_with_result_response.json')
+    }
 }

@@ -51,14 +51,14 @@ class FileServiceImpl implements FileService {
     public Optional<FileUploadResult> getById(@NonNull UUID id) {
         log.info("Retrieving result by id '{}'", id);
         return scanResultRepository.getById(id)
-                .map(s -> new FileUploadResult(s.getId(), s.getValidationStatus(), s.getSha256Hash()));
+                .map(FileScanResultEntity::toDomain);
     }
 
     @Override
     public Optional<FileUploadResult> getBySha256Hash(@NonNull String hash) {
         log.info("Retrieving result by hash '{}'", hash);
         return scanResultRepository.getByHash(hash)
-                .map(s -> new FileUploadResult(s.getId(), s.getValidationStatus(), s.getSha256Hash()));
+                .map(FileScanResultEntity::toDomain);
     }
 
     @Override
@@ -83,7 +83,7 @@ class FileServiceImpl implements FileService {
 
     private Optional<FileUploadResult> checkIfPresent(File file) {
         return scanResultRepository.getByHash(calculateSha256(file))
-                .map(FileScanResultEntity::to);
+                .map(FileScanResultEntity::toDomain);
     }
 
     private String calculateSha256(File file) {

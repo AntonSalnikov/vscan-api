@@ -1,6 +1,6 @@
 {
   "id": "65d634c3-d992-44cb-b991-132f2942d226",
-  "validationStatus": "PROCESSING",
+  "validationStatus": "FINISHED",
   "sha256Hash": "sha256Hash",
-  "scanResult":"UNKNOWN"
+  "scanResult":"OK"
 }

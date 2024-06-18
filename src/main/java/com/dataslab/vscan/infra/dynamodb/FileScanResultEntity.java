@@ -10,6 +10,7 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbParti
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecondaryPartitionKey;
 
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 @DynamoDbBean
@@ -23,9 +24,10 @@ public class FileScanResultEntity {
     private String originalFileName;
     private long fileSize;
     private String sha256Hash;
+
     private ValidationStatus validationStatus = ValidationStatus.QUEUED;
 
-    private String verdict;
+    private VerdictEntity verdict;
     private String segHash;
     private Instant verdictReceivedAt;
 
@@ -55,7 +57,7 @@ public class FileScanResultEntity {
         return entity;
     }
 
-    public FileUploadResult to() {
-        return new FileUploadResult(id, validationStatus, sha256Hash);
+    public FileUploadResult toDomain() {
+        return new FileUploadResult(id, validationStatus, sha256Hash, Optional.ofNullable(verdict).map(VerdictEntity::toDomain).orElse(null));
     }
 }

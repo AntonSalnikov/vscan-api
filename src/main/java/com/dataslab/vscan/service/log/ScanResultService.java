@@ -1,36 +1,32 @@
 package com.dataslab.vscan.service.log;
 
 import com.dataslab.vscan.dto.ValidationStatus;
-import com.dataslab.vscan.service.domain.ScanResult;
+import com.dataslab.vscan.infra.dynamodb.VerdictEntity;
+import com.dataslab.vscan.service.domain.FileVerificationResult;
 import com.dataslab.vscan.service.file.FileScanResultRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.UUID;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class TcpMessageService {
+public class ScanResultService {
 
     private final FileScanResultRepository fileScanResultRepository;
 
-    public void process(ScanResult scanResult)  {
-        log.info("Receive result: {}", scanResult);
-
-        //parse log
-        var messageId = UUID.fromString(scanResult.verdict());
-        var validationStatus = ValidationStatus.FINISHED;
+    public void process(FileVerificationResult fileVerificationResult)  {
+        log.info("Receive result: {}", fileVerificationResult);
 
         //persist verdict
-        fileScanResultRepository.getById(messageId)
+        fileScanResultRepository.getById(fileVerificationResult.messageId())
                 .ifPresentOrElse(file -> {
-                    file.setValidationStatus(validationStatus);
+                    file.setValidationStatus(ValidationStatus.FINISHED);
 
-                    file.setSegHash(scanResult.hash());
-                    file.setVerdict(scanResult.verdict());
+                    file.setSegHash(fileVerificationResult.hash());
+                    file.setVerdict(VerdictEntity.toEntity(fileVerificationResult.verdict()));
                     file.setVerdictReceivedAt(Instant.now());
 
                     file.setModifiedAt(Instant.now());

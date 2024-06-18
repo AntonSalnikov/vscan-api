@@ -3,6 +3,7 @@ package com.dataslab.vscan.web
 import com.dataslab.vscan.config.security.AuthenticationService
 import com.dataslab.vscan.dto.ValidationStatus
 import com.dataslab.vscan.service.domain.FileUploadResult
+import com.dataslab.vscan.service.domain.Verdict
 import com.dataslab.vscan.service.file.FileService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -11,10 +12,10 @@ import org.springframework.mock.web.MockMultipartFile
 import org.springframework.test.web.servlet.ResultActions
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
@@ -30,7 +31,6 @@ class FileUploadControllerTest extends BaseControllerSpec {
 
     def basePath = "/api/files"
 
-
     def "should successfully upload file"() {
         given:
         def file = new MockMultipartFile("file", "hello.txt",
@@ -45,7 +45,8 @@ class FileUploadControllerTest extends BaseControllerSpec {
         )
 
         then:
-        1 * fileService.uploadFile(_ as File, "hello.txt") >> new FileUploadResult(fileUploadResultId, ValidationStatus.PROCESSING, "sha256Hash")
+        1 * fileService.uploadFile(_ as File, "hello.txt") >> new FileUploadResult(
+                fileUploadResultId, ValidationStatus.PROCESSING, "sha256Hash", null)
 
         result
                 .andExpect(status().isAccepted())
@@ -61,7 +62,8 @@ class FileUploadControllerTest extends BaseControllerSpec {
 
     def "should get file upload result by id"() {
         given:
-        def responsePayload = contentPayload.createFileUploadResponse()
+        def verdict = new Verdict("FILE UNKNOWN", "NEGATIVE", "UNKNOWN")
+        def responsePayload = contentPayload.createFileUploadWitResultResponse()
 
         when:
         ResultActions result = this.mockMvc.perform(
@@ -71,7 +73,7 @@ class FileUploadControllerTest extends BaseControllerSpec {
 
         then:
         1 * fileService.getById(fileUploadResultId) >> Optional.of(
-                new FileUploadResult(fileUploadResultId, ValidationStatus.PROCESSING, "sha256Hash")
+                new FileUploadResult(fileUploadResultId, ValidationStatus.FINISHED, "sha256Hash", verdict)
         )
 
         result

@@ -1,6 +1,6 @@
 package com.dataslab.vscan.infra.tcp;
 
-import com.dataslab.vscan.service.log.TcpMessageService;
+import com.dataslab.vscan.service.log.ScanResultService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.integration.annotation.MessageEndpoint;
@@ -16,14 +16,16 @@ import static com.dataslab.vscan.config.misc.TcpIntegrationConfig.TCP_SYSLOG_CHA
 @RequiredArgsConstructor
 public class TCPMessageEndpoint {
 
-    private final TcpMessageService messageService;
+    private static final String SYSLOG_UNDECODED_KEY = "syslog_UNDECODED";
+
+    private final ScanResultService messageService;
 
 
     @ServiceActivator(inputChannel = TCP_SYSLOG_CHANNEL)
     public void process(Map<String, String> message) {
         log.debug("Received message: {}", message);
 
-        var payload = Optional.ofNullable(message.get(SegLogParser.SYSLOG_UNDECODED_KEY))
+        var payload = Optional.ofNullable(message.get(SYSLOG_UNDECODED_KEY))
                 .orElseThrow(() -> new IllegalStateException("No syslog payload is found."));
         messageService.process(SegLogParser.parse(payload));
 

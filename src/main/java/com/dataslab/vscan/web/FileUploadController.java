@@ -3,6 +3,7 @@ package com.dataslab.vscan.web;
 import com.dataslab.vscan.dto.FileUploadResultDTO;
 import com.dataslab.vscan.service.domain.FileUploadResult;
 import com.dataslab.vscan.service.file.FileService;
+import com.dataslab.vscan.service.file.ScanResultResolver;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -79,6 +80,7 @@ public class FileUploadController {
 
     private static FileUploadResultDTO convert(FileUploadResult result) {
 
-        return new FileUploadResultDTO(result.id(), result.validationStatus(), result.sha256Hash());
+        var scanResult = ScanResultResolver.resolve(result.verdict());
+        return new FileUploadResultDTO(result.id(), result.validationStatus(), result.sha256Hash(), scanResult);
     }
 }

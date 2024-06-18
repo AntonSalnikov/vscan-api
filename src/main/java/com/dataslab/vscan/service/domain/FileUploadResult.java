@@ -7,9 +7,10 @@ import java.util.UUID;
 
 public record FileUploadResult(@NonNull UUID id,
                                @NonNull ValidationStatus validationStatus,
-                               @NonNull String sha256Hash) {
+                               @NonNull String sha256Hash,
+                               Verdict verdict) {
 
     public FileUploadResult(@NonNull UUID id, @NonNull String sha256Hash) {
-        this(id, ValidationStatus.QUEUED, sha256Hash);
+        this(id, ValidationStatus.QUEUED, sha256Hash, null);
     }
 }
