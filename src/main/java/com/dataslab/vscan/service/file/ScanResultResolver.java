@@ -46,7 +46,7 @@ public class ScanResultResolver {
             return ScanResult.FAILED;
         }
 
-        if(CollectionUtils.containsAny(verdicts, "ENCRYPTED", "UNSCANNABLE", "SKIPPED")) {
+        if(CollectionUtils.containsAny(verdicts, "FA_PENDING","ENCRYPTED", "UNSCANNABLE", "SKIPPED")) {
             return ScanResult.UNKNOWN;
         }
 
