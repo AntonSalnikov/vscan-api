@@ -1,5 +1,6 @@
 package com.dataslab.vscan.service.file;
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -18,6 +19,16 @@ public class TempFileUtils {
 
         try {
             return Files.createTempFile(temporaryDirectory, UUID.randomUUID().toString(), ".tmp").toFile();
+        } catch (IOException e) {
+            log.error("Error appeared while creating temp file");
+            throw new IllegalStateException(e);
+        }
+    }
+
+    public static File createTempFile(Path temporaryDirectory, @NonNull String suffix) {
+
+        try {
+            return Files.createTempFile(temporaryDirectory, UUID.randomUUID().toString(), suffix).toFile();
         } catch (IOException e) {
             log.error("Error appeared while creating temp file");
             throw new IllegalStateException(e);

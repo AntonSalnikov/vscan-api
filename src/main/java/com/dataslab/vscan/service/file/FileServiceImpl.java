@@ -1,6 +1,6 @@
 package com.dataslab.vscan.service.file;
 
-import com.dataslab.vscan.config.misc.AllowedMediaTypesProperties;
+import com.dataslab.vscan.config.misc.TikaConfiguration;
 import com.dataslab.vscan.dto.ValidationStatus;
 import com.dataslab.vscan.exception.FileTypeValidationException;
 import com.dataslab.vscan.infra.dynamodb.FileScanResultEntity;
@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.tika.Tika;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedInputStream;
@@ -28,12 +27,10 @@ import static com.dataslab.vscan.service.file.TempFileUtils.deleteFile;
 @AllArgsConstructor
 class FileServiceImpl implements FileService {
 
-    private static final Tika TIKA = new Tika();
-
     private final FileStoragePort fileStoragePort;
     private final FileScanResultRepository scanResultRepository;
     private final MailPort mailPort;
-    private final AllowedMediaTypesProperties allowedMediaTypesProperties;
+    private final TikaConfiguration.FileTypeValidator fileTypeValidator;
 
     @Override
     public FileUploadResult uploadFile(@NonNull File file, String originalFileName) {
@@ -105,16 +102,9 @@ class FileServiceImpl implements FileService {
     }
 
     private void validateType(File file) {
-
-        try {
-            var type = TIKA.detect(file);
-            log.info("Detected file media type {}", type);
-            if(!allowedMediaTypesProperties.getAllowedMediaTypes().contains(type)) {
-                throw new FileTypeValidationException("File with type '%s' is not allowed".formatted(type));
-            }
-        } catch (IOException ioe) {
-            log.error("Error appeared while detecting file type");
-            throw new IllegalStateException("File type detection failed");
+        if(fileTypeValidator.isValid(file)) {
+            return;
         }
+        throw new FileTypeValidationException("File with type is not allowed");
     }
 }

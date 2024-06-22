@@ -16,8 +16,8 @@ import java.util.List;
 @Getter
 @Setter
 @Validated
-public class AllowedMediaTypesProperties {
+public class FileTypesProperties {
 
     @NotEmpty
-    private List<String> allowedMediaTypes;
+    private List<String> allowedFileExtensions;
 }

@@ -8,6 +8,7 @@ import com.dataslab.vscan.service.file.ScanResultResolver;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,7 +33,6 @@ import static com.dataslab.vscan.service.file.TempFileUtils.deleteFile;
 @Validated
 public class FileUploadController {
 
-    private static final String TEMP_FILE_SUFFIX = ".tmp";
     private final Path temporaryDirectory;
     private final FileService fileService;
 
@@ -55,7 +55,8 @@ public class FileUploadController {
         File tempFile = null;
         try {
 
-            tempFile = createTempFile(temporaryDirectory);
+            var extension = ".".concat(FilenameUtils.getExtension(originalFileName));
+            tempFile = createTempFile(temporaryDirectory, extension);
             file.transferTo(tempFile);
 
             return convert(fileService.uploadFile(tempFile, originalFileName));
