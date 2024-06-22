@@ -24,9 +24,9 @@ public class SegLogPublisher {
         this.segLogQueue = segLogQueue;
     }
 
-    public void publish(@NonNull String segLog) {
+    public void publish(@NonNull String messagePayload) {
         log.debug("Publishing log to queue {}", segLogQueue);
-        var result = template.send(segLog, MessageBuilder.withPayload(segLogQueue).build());
+        var result = template.send(segLogQueue, MessageBuilder.withPayload(messagePayload).build());
 
         log.debug("Seg log successfully published with id: {}", result.messageId());
     }
