@@ -1,17 +1,21 @@
 package com.dataslab.vscan.service.file;
 
+import com.dataslab.vscan.config.misc.AllowedMediaTypesProperties;
 import com.dataslab.vscan.dto.ValidationStatus;
+import com.dataslab.vscan.exception.FileTypeValidationException;
 import com.dataslab.vscan.infra.dynamodb.FileScanResultEntity;
 import com.dataslab.vscan.service.domain.FileUploadResult;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.tika.detect.DefaultDetector;
+import org.apache.tika.detect.Detector;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.mime.MediaType;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Optional;
@@ -24,9 +28,13 @@ import static com.dataslab.vscan.service.file.TempFileUtils.deleteFile;
 @AllArgsConstructor
 class FileServiceImpl implements FileService {
 
+    private static final Detector DETECTOR = new DefaultDetector();
+    private static final Metadata METADATA = new Metadata();
+
     private final FileStoragePort fileStoragePort;
     private final FileScanResultRepository scanResultRepository;
     private final MailPort mailPort;
+    private final AllowedMediaTypesProperties allowedMediaTypesProperties;
 
     @Override
     public FileUploadResult uploadFile(@NonNull File file, String originalFileName) {
@@ -82,17 +90,37 @@ class FileServiceImpl implements FileService {
     }
 
     private Optional<FileUploadResult> checkIfPresent(File file) {
-        return scanResultRepository.getByHash(calculateSha256(file))
+        return scanResultRepository.getByHash(calculateSha256AndValidateType(file))
                 .map(FileScanResultEntity::toDomain);
     }
 
-    private String calculateSha256(File file) {
+    private String calculateSha256AndValidateType(File file) {
 
-        try(var is = new FileInputStream(file)) {
+        try(var is = new BufferedInputStream(new FileInputStream(file))) {
+            validateType(is);
             return Base64.getEncoder().encodeToString(DigestUtils.sha256(is));
         } catch (IOException ioe) {
             log.error("Error appeared while calculating sha256 hash for file {}", file, ioe);
             throw new IllegalStateException("Failed to calculate sha256 hash");
+        }
+    }
+
+    private void validateType(InputStream inputStream) {
+        var type = detectDocTypeUsingDetector(inputStream);
+        log.info("Detected file media type {}", type);
+        if(!allowedMediaTypesProperties.getAllowedMediaTypes().contains(type)) {
+            throw new FileTypeValidationException("File with type '%s' is not allowed".formatted(type));
+        }
+    }
+
+    public static String detectDocTypeUsingDetector(InputStream stream) {
+
+        try {
+            MediaType mediaType = DETECTOR.detect(stream, METADATA);
+            return mediaType.toString();
+        } catch (IOException ioe) {
+            log.error("Error appeared while validating file", ioe);
+            throw new IllegalStateException("Failed to validate file type.");
         }
     }
 }

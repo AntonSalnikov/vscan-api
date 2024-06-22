@@ -1,6 +1,7 @@
 package com.dataslab.vscan.web;
 
 import com.dataslab.vscan.dto.FileUploadResultDTO;
+import com.dataslab.vscan.exception.FileTypeValidationException;
 import com.dataslab.vscan.service.domain.FileUploadResult;
 import com.dataslab.vscan.service.file.FileService;
 import com.dataslab.vscan.service.file.ScanResultResolver;
@@ -61,6 +62,8 @@ public class FileUploadController {
         } catch (IOException e) {
             log.error("Error appeared while loading file with originalFileName {}", originalFileName, e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error appeared while loading file");
+        } catch (FileTypeValidationException ftve) {
+          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ftve.getMessage());
         } finally {
             deleteFile(tempFile);
         }
