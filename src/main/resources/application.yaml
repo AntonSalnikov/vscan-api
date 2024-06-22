@@ -16,6 +16,7 @@ spring:
         region: eu-central-1
         queue:
           file-upload-queue: file-upload-queue-test
+          seg-log-queue: seg-log-queue-test
       s3:
         region: eu-central-1
         dirty-bucket: vscan-api-dirty-storage-test
