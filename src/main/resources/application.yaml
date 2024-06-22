@@ -3,7 +3,8 @@ spring:
     name: vscan-api
     allowed-media-types:
       - application/msword
-      - application/vnd.openxmlformats-officedocument.wordprocessingml.document,
+      - application/vnd.openxmlformats-officedocument.wordprocessingml.document
+      - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
       - application/vnd.ms-word.document.macroEnabled.12
       - application/vnd.ms-excel
       - application/vnd.ms-excel.sheet.macroEnabled.12

@@ -2,11 +2,11 @@ package com.dataslab.vscan.service.file
 
 import com.dataslab.vscan.BaseIT
 import com.dataslab.vscan.dto.ValidationStatus
+import com.dataslab.vscan.exception.FileTypeValidationException
 import com.dataslab.vscan.infra.dynamodb.FileScanResultEntity
+import org.apache.commons.io.FileUtils
 import org.springframework.beans.factory.annotation.Autowired
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable
-
-import java.nio.file.Files
 
 class FileServiceImplIT extends BaseIT {
 
@@ -27,7 +27,7 @@ class FileServiceImplIT extends BaseIT {
 
     def "should upload file"() {
         given:
-        def tempFile = createFile()
+        def tempFile = createFile(fileName)
 
         when:
         def result = underTest.uploadFile(tempFile, originalFileName)
@@ -44,14 +44,25 @@ class FileServiceImplIT extends BaseIT {
 
         then:
         sameResult == result
-        
-        cleanup:
-        tempFile.delete()
+
+        where:
+        fileName << ['test_docx.docx', 'test_xls.xlsx']
+    }
+
+    def "should throw FileTypeValidationException"() {
+        given:
+        def file = createFile("test_png.xlsx")
+
+        when:
+        underTest.uploadFile(file, originalFileName)
+
+        then:
+        thrown(FileTypeValidationException)
     }
 
     def "should retrieve upload file result by id"() {
         given:
-        def tempFile = createFile()
+        def tempFile = createFile('test_xls.xlsx')
         def created = underTest.uploadFile(tempFile, originalFileName)
         assert created.id() != null
 
@@ -61,9 +72,6 @@ class FileServiceImplIT extends BaseIT {
         then:
         result.isPresent()
         result.get() == created
-
-        cleanup:
-        tempFile.delete()
     }
 
     def "should return empty optional if file is not present"() {
@@ -76,7 +84,7 @@ class FileServiceImplIT extends BaseIT {
 
     def "should retrieve upload file result by hash"() {
         given:
-        def tempFile = createFile()
+        def tempFile = createFile('test_xls.xlsx')
         def created = underTest.uploadFile(tempFile, originalFileName)
         assert created.id() != null
 
@@ -86,9 +94,6 @@ class FileServiceImplIT extends BaseIT {
         then:
         result.isPresent()
         result.get() == created
-
-        cleanup:
-        tempFile.delete()
     }
 
     def "should return empty optional if file is not present with such hash"() {
@@ -99,12 +104,7 @@ class FileServiceImplIT extends BaseIT {
         result.isEmpty()
     }
 
-    def createFile() {
-        def tempFile = Files.createTempFile(UUID.randomUUID().toString(), ".tmp").toFile()
-        def ln = System.getProperty('line.separator')
-        tempFile << "Line one of output example${ln}" +
-                "Line two of output example${ln}Line three of output example"
-
-        return tempFile
+    def createFile(String fileName) {
+        return FileUtils.toFile(this.class.getResource(fileName))
     }
 }

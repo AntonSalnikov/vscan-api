@@ -9,13 +9,13 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.tika.detect.DefaultDetector;
-import org.apache.tika.detect.Detector;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.mime.MediaType;
+import org.apache.tika.Tika;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Optional;
@@ -28,8 +28,7 @@ import static com.dataslab.vscan.service.file.TempFileUtils.deleteFile;
 @AllArgsConstructor
 class FileServiceImpl implements FileService {
 
-    private static final Detector DETECTOR = new DefaultDetector();
-    private static final Metadata METADATA = new Metadata();
+    private static final Tika TIKA = new Tika();
 
     private final FileStoragePort fileStoragePort;
     private final FileScanResultRepository scanResultRepository;
@@ -40,6 +39,7 @@ class FileServiceImpl implements FileService {
     public FileUploadResult uploadFile(@NonNull File file, String originalFileName) {
         log.info("Uploading file {} with original name {}", file, originalFileName);
 
+        validateType(file);
         var mayBePresent = checkIfPresent(file);
 
         if(mayBePresent.isPresent()) {
@@ -97,7 +97,6 @@ class FileServiceImpl implements FileService {
     private String calculateSha256AndValidateType(File file) {
 
         try(var is = new BufferedInputStream(new FileInputStream(file))) {
-            validateType(is);
             return Base64.getEncoder().encodeToString(DigestUtils.sha256(is));
         } catch (IOException ioe) {
             log.error("Error appeared while calculating sha256 hash for file {}", file, ioe);
@@ -105,22 +104,17 @@ class FileServiceImpl implements FileService {
         }
     }
 
-    private void validateType(InputStream inputStream) {
-        var type = detectDocTypeUsingDetector(inputStream);
-        log.info("Detected file media type {}", type);
-        if(!allowedMediaTypesProperties.getAllowedMediaTypes().contains(type)) {
-            throw new FileTypeValidationException("File with type '%s' is not allowed".formatted(type));
-        }
-    }
-
-    public static String detectDocTypeUsingDetector(InputStream stream) {
+    private void validateType(File file) {
 
         try {
-            MediaType mediaType = DETECTOR.detect(stream, METADATA);
-            return mediaType.toString();
+            var type = TIKA.detect(file);
+            log.info("Detected file media type {}", type);
+            if(!allowedMediaTypesProperties.getAllowedMediaTypes().contains(type)) {
+                throw new FileTypeValidationException("File with type '%s' is not allowed".formatted(type));
+            }
         } catch (IOException ioe) {
-            log.error("Error appeared while validating file", ioe);
-            throw new IllegalStateException("Failed to validate file type.");
+            log.error("Error appeared while detecting file type");
+            throw new IllegalStateException("File type detection failed");
         }
     }
 }
