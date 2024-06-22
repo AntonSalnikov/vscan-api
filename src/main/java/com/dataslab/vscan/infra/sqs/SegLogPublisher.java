@@ -6,6 +6,7 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.integration.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -25,7 +26,7 @@ public class SegLogPublisher {
 
     public void publish(@NonNull String segLog) {
         log.debug("Publishing log to queue {}", segLogQueue);
-        var result = template.send(segLog, segLog);
+        var result = template.send(segLog, MessageBuilder.withPayload(segLogQueue).build());
 
         log.debug("Seg log successfully published with id: {}", result.messageId());
     }
