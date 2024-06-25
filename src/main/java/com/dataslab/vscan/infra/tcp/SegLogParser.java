@@ -56,26 +56,21 @@ public class SegLogParser {
 
         var messageId = UUID.fromString(messageIdMatcher.group(1).trim());
 
-        var fileHashMatcher = FILE_HASH_PATTERN.matcher(payload);
-        if(!fileHashMatcher.find()) {
-            throw new IllegalStateException("No file hash found.");
-        }
-
-        var fileHash = fileHashMatcher.group(1).trim();
+        var fileHash = resolvePattern(payload, FILE_HASH_PATTERN, "UNDEFINED");
 
         var verdict = new Verdict(
-               resolveVerdict(payload, VERDICT_PATTERN),
-               resolveVerdict(payload, ESAAVVerdict_VERDICT_PATTERN),
-               resolveVerdict(payload, ESAAMP_VERDICT_PATTERN)
+               resolvePattern(payload, VERDICT_PATTERN, NO_VERDICT),
+               resolvePattern(payload, ESAAVVerdict_VERDICT_PATTERN, NO_VERDICT),
+               resolvePattern(payload, ESAAMP_VERDICT_PATTERN, NO_VERDICT)
         );
         return new FileVerificationResult(fileHash, verdict, messageId);
     }
 
-    private static String resolveVerdict(String payload, Pattern pattern) {
+    private static String resolvePattern(String payload, Pattern pattern, String defaultValue) {
 
         var verdictMatcher = pattern.matcher(payload);
         if(!verdictMatcher.find()) {
-            return NO_VERDICT;
+            return defaultValue;
         }
         return verdictMatcher.group(1).trim();
     }
