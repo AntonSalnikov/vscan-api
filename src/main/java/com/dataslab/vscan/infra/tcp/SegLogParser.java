@@ -79,7 +79,7 @@ public class SegLogParser {
             return messageIdMatcher.group(1).trim();
         }
 
-        var scanningMessageIdMatcher = SCANNING_FILE_ID_PATTERN.matcher(payload)
+        var scanningMessageIdMatcher = SCANNING_FILE_ID_PATTERN.matcher(payload);
         if(scanningMessageIdMatcher.find()) {
             return scanningMessageIdMatcher.group(1).trim();
         }
