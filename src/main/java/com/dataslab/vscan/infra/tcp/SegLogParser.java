@@ -14,6 +14,8 @@ public class SegLogParser {
 
     private static final String NO_VERDICT = "NO_VERDICT";
     private static final Pattern FILE_ID_PATTERN = Pattern.compile("ESAAttachmentDetails=\\{'([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})");
+    private static final Pattern SCANNING_FILE_ID_PATTERN = Pattern.compile("File id: ([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})");
+
     private static final Pattern VERDICT_PATTERN = Pattern.compile("'Verdict': '(.*)',");
     private static final Pattern FILE_HASH_PATTERN = Pattern.compile("'fileHash': '(.*)'},");
 
@@ -48,13 +50,7 @@ public class SegLogParser {
 
     public static FileVerificationResult parse(String payload) {
 
-        var messageIdMatcher = FILE_ID_PATTERN.matcher(payload);
-
-        if(!messageIdMatcher.find()) {
-            throw new IllegalStateException("No message id found");
-        }
-
-        var messageId = UUID.fromString(messageIdMatcher.group(1).trim());
+        var messageId = UUID.fromString(resolveFileId(payload));
 
         var fileHash = resolvePattern(payload, FILE_HASH_PATTERN, "UNDEFINED");
 
@@ -73,5 +69,21 @@ public class SegLogParser {
             return defaultValue;
         }
         return verdictMatcher.group(1).trim();
+    }
+
+    private static String resolveFileId(String payload) {
+
+        var messageIdMatcher = FILE_ID_PATTERN.matcher(payload);
+
+        if(messageIdMatcher.find()) {
+            return messageIdMatcher.group(1).trim();
+        }
+
+        var scanningMessageIdMatcher = SCANNING_FILE_ID_PATTERN.matcher(payload)
+        if(scanningMessageIdMatcher.find()) {
+            return scanningMessageIdMatcher.group(1).trim();
+        }
+
+        throw new IllegalStateException("No message id found");
     }
 }
