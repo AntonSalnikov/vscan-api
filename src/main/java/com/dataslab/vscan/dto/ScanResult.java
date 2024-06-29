@@ -2,7 +2,7 @@ package com.dataslab.vscan.dto;
 
 public enum ScanResult {
 
-    OK, //file is ok,
+    CLEAN, //file is ok,
     UNKNOWN, // Result is unknown
-    FAILED //
+    INFECTED //
 }

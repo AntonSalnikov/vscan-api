@@ -43,7 +43,7 @@ public class ScanResultResolver {
         var verdicts = List.of(verdict.ESAAMPVerdict(), verdict.ESAAVVerdict());
 
         if(CollectionUtils.containsAny(verdicts, "POSITIVE", "MALICIOUS")) {
-            return ScanResult.FAILED;
+            return ScanResult.INFECTED;
         }
 
         if(CollectionUtils.containsAny(verdicts, "FA_PENDING","ENCRYPTED", "UNSCANNABLE", "SKIPPED")) {
@@ -51,7 +51,7 @@ public class ScanResultResolver {
         }
 
         if(CollectionUtils.containsAny(verdicts, "NEGATIVE", "CLEAN", "UNKNOWN", "LOW_RISK")) {
-            return ScanResult.OK;
+            return ScanResult.CLEAN;
         }
 
         return ScanResult.UNKNOWN;

@@ -11,7 +11,7 @@ class ScanResultResolverTest extends Specification {
         def verdict = new Verdict("NO_FILE", ESAAVVerdict, ESAAMPVerdict)
 
         expect:
-        ScanResultResolver.resolve(verdict) == ScanResult.OK
+        ScanResultResolver.resolve(verdict) == ScanResult.CLEAN
 
         where:
         ESAAVVerdict    | ESAAMPVerdict
@@ -26,7 +26,7 @@ class ScanResultResolverTest extends Specification {
         def verdict = new Verdict("NO_FILE", ESAAVVerdict, ESAAMPVerdict)
 
         expect:
-        ScanResultResolver.resolve(verdict) == ScanResult.FAILED
+        ScanResultResolver.resolve(verdict) == ScanResult.INFECTED
 
         where:
         ESAAVVerdict    | ESAAMPVerdict
