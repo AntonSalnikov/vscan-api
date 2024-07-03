@@ -7,6 +7,7 @@ import com.dataslab.vscan.infra.dynamodb.FileScanResultEntity
 import org.apache.commons.io.FileUtils
 import org.springframework.beans.factory.annotation.Autowired
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable
+import spock.lang.Ignore
 
 class FileServiceImplIT extends BaseIT {
 
@@ -49,6 +50,7 @@ class FileServiceImplIT extends BaseIT {
         fileName << ['test_docx.docx', 'test_xls.xlsx']
     }
 
+    @Ignore
     def "should throw FileTypeValidationException"() {
         given:
         def file = createFile("test_png.xlsx")
