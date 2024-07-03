@@ -1,11 +1,43 @@
 spring:
   application:
     name: vscan-api
+    #архіви: 7z, rar, zip
+    #Документи: doc, docx, latex, mdb, pdf, ppt, pptx, xls, xlsx, rtf
+    #Images: bmp, emf, djvu, jpeg, jpg, png, tiff
+    #Media: avi, mov, mp3, mp4, mp3g, wav, wma, wmv
+    #Text: txt, xml, html
     allowed-file-extensions:
+      - .7z
+      - .rar
+      - .zip
       - .doc
       - .docx
+      - .latex
+      - .mdb
+      - .pdf
+      - .ppt
+      - .pptx
       - .xls
       - .xlsx
+      - .rtf
+      - .bmp
+      - .emf
+      - .djvu
+      - .jpeg
+      - .jpg
+      - .png
+      - .tiff
+      - .avi
+      - .mov
+      - .mp3
+      - .mp4
+      - .mp3g
+      - .wav
+      - .wma
+      - .wmv
+      - .txt
+      - .xml
+      - .html
   servlet:
     multipart:
       max-file-size: 10MB
